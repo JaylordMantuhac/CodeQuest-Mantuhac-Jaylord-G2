@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from .forms import ChallengeForm
 from .models import Challenge, Submission
 
 
@@ -102,3 +103,17 @@ class ChallengeFlowTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Submission.objects.exists())
         self.assertContains(response, 'Answer cannot be empty.')
+
+    def test_challenge_form_requires_title_and_expected_output(self):
+        form = ChallengeForm(data={
+            'title': '   ',
+            'description': 'A challenge description',
+            'category': 'variables',
+            'difficulty': 'easy',
+            'language': 'Python',
+            'expected_output': '   ',
+        })
+
+        self.assertFalse(form.is_valid())
+        self.assertIn('Title is required.', form.errors['title'])
+        self.assertIn('Expected output is required.', form.errors['expected_output'])

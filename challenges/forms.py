@@ -3,16 +3,25 @@ from .models import Challenge, Submission
 
 
 class ChallengeForm(forms.ModelForm):
+    title = forms.CharField(
+        required=True,
+        error_messages={'required': 'Title is required.'},
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+    expected_output = forms.CharField(
+        required=True,
+        error_messages={'required': 'Expected output is required.'},
+        widget=forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+    )
+
     class Meta:
         model = Challenge
         fields = ['title', 'description', 'category', 'difficulty', 'language', 'expected_output']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'rows': 5, 'class': 'form-control'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
             'difficulty': forms.Select(attrs={'class': 'form-select'}),
             'language': forms.TextInput(attrs={'class': 'form-control'}),
-            'expected_output': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
         }
 
     def clean_title(self):
