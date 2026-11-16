@@ -22,6 +22,13 @@ The application uses PostgreSQL/Supabase by default. SQLite is available only wh
 - Answers are checked against the challenge's expected output.
 - Students can view their own submission history; other users' submissions are not exposed.
 
+## Account Feature
+
+- Registration validates required fields, email format, uniqueness, and matching passwords.
+- Django authentication hashes passwords and protects authenticated pages.
+- Student and Admin users are routed to role-specific dashboards.
+- Users can view and update only their own profile details.
+
 ## Testing
 
 Run the full test suite with `python manage.py test`. For an offline environment, set `USE_SQLITE_DEV=True` in `.env` before running tests.
