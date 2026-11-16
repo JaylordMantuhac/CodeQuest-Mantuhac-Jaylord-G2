@@ -29,16 +29,19 @@ class ChallengeForm(forms.ModelForm):
 
 
 class SubmissionForm(forms.ModelForm):
+    answer = forms.CharField(
+        required=True,
+        error_messages={'required': 'Answer cannot be empty.'},
+        widget=forms.Textarea(attrs={
+            'rows': 6,
+            'class': 'form-control',
+            'placeholder': 'Type your answer here...',
+        }),
+    )
+
     class Meta:
         model = Submission
         fields = ['answer']
-        widgets = {
-            'answer': forms.Textarea(attrs={
-                'rows': 6,
-                'class': 'form-control',
-                'placeholder': 'Type your answer here...',
-            }),
-        }
 
     def clean_answer(self):
         answer = self.cleaned_data.get('answer', '').strip()
