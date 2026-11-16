@@ -6,7 +6,7 @@ CodeQuest is a Django coding practice platform for students. The current vertica
 
 1. Create and activate a virtual environment.
 2. Install dependencies with `pip install -r requirements.txt`.
-3. Copy `.env.example` to `.env` and set the PostgreSQL or Supabase connection values.
+3. Copy `.env.example` to `.env` and replace `[YOUR-PASSWORD]` with your Supabase database password. Percent-encode special characters in the password before placing it in `DATABASE_URL`.
 4. Run `python manage.py migrate`.
 5. Create an administrator with `python manage.py createsuperuser` or register an account with the Admin role.
 6. Load the starter collection with `python manage.py seed_challenges`.
