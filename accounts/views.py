@@ -6,6 +6,12 @@ from .models import User, Profile
 from .forms import RegistrationForm, LoginForm, UserUpdateForm, ProfileUpdateForm
 from .decorators import role_required
 
+try:
+    from challenges.models import Challenge, Submission
+    CHALLENGES_APP = True
+except ImportError:
+    CHALLENGES_APP = False
+
 
 def index_view(request):
     if request.user.is_authenticated:
@@ -101,12 +107,17 @@ def admin_dashboard_view(request):
     admin_count = User.objects.filter(role=User.ROLE_ADMIN).count()
     recent_users = User.objects.order_by('-date_joined')[:6]
 
+    total_challenges = Challenge.objects.count() if CHALLENGES_APP else 0
+    total_submissions = Submission.objects.count() if CHALLENGES_APP else 0
+
     context = {
         'total_users': total_users,
         'student_count': student_count,
         'admin_count': admin_count,
         'recent_users': recent_users,
         'role_title': 'Quest Master / Administrator',
+        'total_challenges': total_challenges,
+        'total_submissions': total_submissions,
     }
     return render(request, 'accounts/admin_dashboard.html', context)
 
@@ -114,13 +125,15 @@ def admin_dashboard_view(request):
 @login_required
 @role_required([User.ROLE_STUDENT])
 def student_dashboard_view(request):
+    total_challenges = Challenge.objects.count() if CHALLENGES_APP else 0
+    my_submissions = Submission.objects.filter(student=request.user) if CHALLENGES_APP else []
+    correct_count = sum(1 for s in my_submissions if s.is_correct) if CHALLENGES_APP else 0
+
     context = {
         'role_title': 'Quest Adventurer / Student',
-        'level': 5,
-        'xp': 1450,
-        'next_level_xp': 2000,
-        'active_quests_count': 3,
-        'completed_quests_count': 7,
+        'total_challenges': total_challenges,
+        'my_submission_count': len(list(my_submissions)),
+        'correct_count': correct_count,
     }
     return render(request, 'accounts/student_dashboard.html', context)
 
