@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profile - CodeQuest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="text-light fw-bold mb-1">
+                        <i class="bi bi-person-badge text-primary me-2"></i> User Profile
+                    </h2>
+                    <p class="text-muted small mb-0">Account and profile details</p>
+                </div>
+                <div>
+                    <a href="{% url 'accounts:profile_edit' %}" class="btn btn-cq-primary">
+                        <i class="bi bi-pencil-square me-1"></i> Edit Profile
+                    </a>
+                </div>
+            </div>
+
+            <div class="cq-card mb-4">
+                <div class="card-body p-4">
+                    <div class="row align-items-center g-4">
+                        <div class="col-sm-auto text-center">
+                            {% if profile.profile_photo %}
+                                <img src="{{ profile.profile_photo.url }}" alt="{{ user.username }}" class="profile-photo-circle">
+                            {% else %}
+                                <div class="profile-avatar-placeholder mx-auto">
+                                    {{ user.first_name|default:user.username|slice:":1"|upper }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                                <h3 class="text-light fw-bold mb-0">{{ user.get_full_name|default:user.username }}</h3>
+                                {% if user.role == 'admin' %}
+                                    <span class="badge-admin">Quest Master (Admin)</span>
+                                {% else %}
+                                    <span class="badge-student">Quest Adventurer (Student)</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-primary fw-semibold mb-2">@{{ user.username }}</div>
+                            <p class="text-muted small mb-3">
+                                {{ profile.bio|default:"No bio added yet." }}
+                            </p>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <span class="badge bg-dark border border-secondary border-opacity-50 text-muted">
+                                    <i class="bi bi-calendar3 me-1"></i> Joined {{ user.date_joined|date:"M d, Y" }}
+                                </span>
+                                <span class="badge bg-dark border border-secondary border-opacity-50 text-muted">
+                                    <i class="bi bi-laptop me-1"></i> {{ profile.specialization|default:"General Programming" }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cq-card">
+                <div class="cq-card-header fw-bold text-light">
+                    <i class="bi bi-info-circle text-primary me-2"></i> Account & Contact Information
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-semibold d-block">First Name</label>
+                            <div class="text-light fw-medium mt-1">{{ user.first_name|default:"Not specified" }}</div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-semibold d-block">Last Name</label>
+                            <div class="text-light fw-medium mt-1">{{ user.last_name|default:"Not specified" }}</div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-semibold d-block">Email Address</label>
+                            <div class="text-light fw-medium mt-1">{{ user.email }}</div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-semibold d-block">Contact Number</label>
+                            <div class="text-light fw-medium mt-1">{{ profile.contact_number|default:"Not provided" }}</div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-semibold d-block">Role Assignment</label>
+                            <div class="text-light fw-medium mt-1">{{ user.get_role_display_name }}</div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-semibold d-block">Specialization</label>
+                            <div class="text-light fw-medium mt-1">{{ profile.specialization|default:"Full Stack Web Development" }}</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="text-muted small text-uppercase fw-semibold d-block">Biography</label>
+                            <div class="p-3 rounded bg-dark border border-secondary border-opacity-25 text-light mt-1">
+                                {{ profile.bio|default:"No bio written yet." }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top border-secondary border-opacity-25">
+                        <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-sm btn-cq-outline">
+                            <i class="bi bi-arrow-left me-1"></i> Return to Dashboard
+                        </a>
+                        <a href="{% url 'accounts:profile_edit' %}" class="btn btn-sm btn-cq-primary">
+                            <i class="bi bi-pencil me-1"></i> Edit Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

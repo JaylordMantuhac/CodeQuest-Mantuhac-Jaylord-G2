@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - CodeQuest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="text-light fw-bold mb-1">
+                        <i class="bi bi-pencil-square text-primary me-2"></i> Edit Profile
+                    </h2>
+                    <p class="text-muted small mb-0">Update your account information, contact details, and profile photo</p>
+                </div>
+                <div>
+                    <a href="{% url 'accounts:profile' %}" class="btn btn-sm btn-cq-outline">
+                        <i class="bi bi-x-circle me-1"></i> Cancel
+                    </a>
+                </div>
+            </div>
+
+            <div class="cq-card">
+                <div class="card-body p-4">
+                    {% if user_form.non_field_errors or profile_form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {% for error in user_form.non_field_errors %}
+                                <div><i class="bi bi-exclamation-circle me-1"></i> {{ error }}</div>
+                            {% endfor %}
+                            {% for error in profile_form.non_field_errors %}
+                                <div><i class="bi bi-exclamation-circle me-1"></i> {{ error }}</div>
+                            {% endfor %}
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+
+                        <h5 class="text-light fw-bold mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                            <i class="bi bi-person-fill text-primary me-1"></i> Personal Identity
+                        </h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <label for="{{ user_form.first_name.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    First Name <span class="text-danger">*</span>
+                                </label>
+                                {{ user_form.first_name }}
+                                {% if user_form.first_name.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ user_form.first_name.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="{{ user_form.last_name.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Last Name <span class="text-danger">*</span>
+                                </label>
+                                {{ user_form.last_name }}
+                                {% if user_form.last_name.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ user_form.last_name.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ user_form.email.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Email Address <span class="text-danger">*</span>
+                                </label>
+                                {{ user_form.email }}
+                                {% if user_form.email.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ user_form.email.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text text-muted small">Must be a valid, unique email. Other accounts cannot share this email.</div>
+                            </div>
+                        </div>
+
+                        <h5 class="text-light fw-bold mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                            <i class="bi bi-camera-fill text-primary me-1"></i> Profile Photo & Details
+                        </h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <label class="form-label text-light small fw-semibold d-block">Current Profile Photo</label>
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    {% if user.profile.profile_photo %}
+                                        <img src="{{ user.profile.profile_photo.url }}" alt="{{ user.username }}" class="profile-photo-circle" style="width: 80px; height: 80px;">
+                                    {% else %}
+                                        <div class="profile-avatar-placeholder" style="width: 80px; height: 80px; font-size: 1.8rem;">
+                                            {{ user.first_name|default:user.username|slice:":1"|upper }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="small text-muted">
+                                        Upload a new image below to change your avatar (JPEG, PNG).
+                                    </div>
+                                </div>
+                                <label for="{{ profile_form.profile_photo.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Upload New Photo
+                                </label>
+                                {{ profile_form.profile_photo }}
+                                {% if profile_form.profile_photo.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ profile_form.profile_photo.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="{{ profile_form.contact_number.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Contact Number
+                                </label>
+                                {{ profile_form.contact_number }}
+                                {% if profile_form.contact_number.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ profile_form.contact_number.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="{{ profile_form.specialization.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Specialization / Focus
+                                </label>
+                                {{ profile_form.specialization }}
+                                {% if profile_form.specialization.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ profile_form.specialization.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ profile_form.bio.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Biography
+                                </label>
+                                {{ profile_form.bio }}
+                                {% if profile_form.bio.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ profile_form.bio.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text text-muted small">Max 500 characters.</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25">
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-cq-outline">
+                                <i class="bi bi-arrow-left me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-cq-primary fw-bold px-4">
+                                <i class="bi bi-check-circle-fill me-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

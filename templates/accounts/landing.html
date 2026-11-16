@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}CodeQuest - Gamified Coding Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row align-items-center justify-content-center min-vh-75">
+        <div class="col-lg-8 text-center">
+            <div class="badge badge-student mb-3 px-3 py-2 fs-6">
+                <i class="bi bi-stars me-1"></i> CodeQuest Project
+            </div>
+            <h1 class="display-3 fw-bolder brand-text mb-4">Master Code Through Quests</h1>
+            <p class="lead text-secondary mb-5">
+                CodeQuest is a gamified coding practice platform built with Full-Stack Django and Supabase PostgreSQL.
+                Create an account, pick your role, complete programming exercises, and level up your skills.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{% url 'accounts:register' %}" class="btn btn-cq-primary btn-lg px-4 shadow">
+                    <i class="bi bi-person-plus-fill me-2"></i> Create an Account
+                </a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-cq-outline btn-lg px-4">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Log In
+                </a>
+            </div>
+
+            <div class="row g-4 mt-5 text-start">
+                <div class="col-md-4">
+                    <div class="cq-card p-4 h-100">
+                        <i class="bi bi-shield-check text-primary fs-2 mb-3"></i>
+                        <h5 class="text-light fw-bold">Authentication</h5>
+                        <p class="text-muted small mb-0">
+                            Strict input validation, unique email enforcement, and secure password hashing with Django.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="cq-card p-4 h-100">
+                        <i class="bi bi-diagram-3 text-success fs-2 mb-3"></i>
+                        <h5 class="text-light fw-bold">Role-Based Access</h5>
+                        <p class="text-muted small mb-0">
+                            Dedicated dashboards for Students and Admins with protected routes and custom navigation.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="cq-card p-4 h-100">
+                        <i class="bi bi-database text-warning fs-2 mb-3"></i>
+                        <h5 class="text-light fw-bold">Supabase PostgreSQL</h5>
+                        <p class="text-muted small mb-0">
+                            Cloud-hosted PostgreSQL database connected with secure environment variables.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

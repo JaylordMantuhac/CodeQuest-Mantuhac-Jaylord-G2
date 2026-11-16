@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - CodeQuest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="cq-card">
+                <div class="cq-card-header text-center">
+                    <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 mb-2">
+                        <i class="bi bi-person-plus text-primary fs-3"></i>
+                    </div>
+                    <h3 class="fw-bold text-light mb-1">Create Your Account</h3>
+                    <p class="text-muted small mb-0">Join CodeQuest and begin your gamified programming journey</p>
+                </div>
+                <div class="card-body p-4">
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {% for error in form.non_field_errors %}
+                                <div><i class="bi bi-exclamation-circle me-1"></i> {{ error }}</div>
+                            {% endfor %}
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    First Name <span class="text-danger">*</span>
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.first_name.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Last Name <span class="text-danger">*</span>
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.last_name.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ form.username.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Username <span class="text-danger">*</span>
+                                </label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.username.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ form.email.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Email Address <span class="text-danger">*</span>
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.email.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text text-muted small">Must be a valid, unique email format.</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ form.role.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Account Role <span class="text-danger">*</span>
+                                </label>
+                                {{ form.role }}
+                                {% if form.role.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.role.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text text-muted small">Choose your role: Student (Quest Adventurer) or Admin (Quest Master).</div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="{{ form.password.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Password <span class="text-danger">*</span>
+                                </label>
+                                {{ form.password }}
+                                {% if form.password.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.password.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text text-muted small">Minimum 8 characters.</div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="{{ form.confirm_password.id_for_label }}" class="form-label text-light small fw-semibold">
+                                    Confirm Password <span class="text-danger">*</span>
+                                </label>
+                                {{ form.confirm_password }}
+                                {% if form.confirm_password.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.confirm_password.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-cq-primary py-2 fw-bold">
+                                <i class="bi bi-shield-lock-fill me-1"></i> Register Account
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="cq-card-header text-center py-3">
+                    <p class="text-muted small mb-0">
+                        Already have an account? 
+                        <a href="{% url 'accounts:login' %}" class="text-primary fw-semibold text-decoration-none">
+                            Sign in here <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
