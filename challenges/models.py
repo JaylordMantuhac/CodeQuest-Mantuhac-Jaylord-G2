@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 
 
@@ -28,6 +29,22 @@ class Challenge(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(category__in=['variables', 'conditions', 'loops', 'functions']),
+                name='challenge_category_valid',
+            ),
+            models.CheckConstraint(
+                condition=Q(difficulty__in=['easy', 'medium', 'hard']),
+                name='challenge_difficulty_valid',
+            ),
+            models.CheckConstraint(
+                condition=~Q(title=''),
+                name='challenge_title_not_empty',
+            ),
+        ]
 
     def __str__(self):
         return self.title

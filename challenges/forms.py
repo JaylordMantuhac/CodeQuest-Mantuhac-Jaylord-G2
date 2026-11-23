@@ -36,6 +36,12 @@ class ChallengeForm(forms.ModelForm):
             raise forms.ValidationError('Expected output is required.')
         return output
 
+    def clean_description(self):
+        description = self.cleaned_data.get('description', '').strip()
+        if not description:
+            raise forms.ValidationError('Description is required.')
+        return description
+
 
 class SubmissionForm(forms.ModelForm):
     answer = forms.CharField(

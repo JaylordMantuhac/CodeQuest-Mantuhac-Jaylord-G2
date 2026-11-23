@@ -38,7 +38,7 @@ class RegistrationForm(forms.ModelForm):
         })
     )
     role = forms.ChoiceField(
-        choices=User.ROLE_CHOICES,
+        choices=((User.ROLE_STUDENT, 'Student (Quest Adventurer)'),),
         required=True,
         widget=forms.Select(attrs={
             'class': 'form-select'
@@ -102,8 +102,6 @@ class RegistrationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password'])
-        if user.role == User.ROLE_ADMIN:
-            user.is_staff = True
         if commit:
             user.save()
         return user
