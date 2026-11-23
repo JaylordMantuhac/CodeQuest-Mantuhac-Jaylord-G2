@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
 from .forms import ChallengeForm
@@ -33,6 +33,53 @@ class ChallengeFlowTests(TestCase):
     def test_challenge_list_requires_login(self):
         response = self.client.get(reverse('challenge_list'))
         self.assertRedirects(response, f"{reverse('accounts:login')}?next={reverse('challenge_list')}")
+
+    def test_admin_create_requires_login(self):
+        response = self.client.get(reverse('challenge_create'))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse('accounts:login'), response.url)
+
+    def test_invalid_challenge_id_returns_404(self):
+        self.client.login(username='student', password='StudentPassword123!')
+        response = self.client.get(reverse('challenge_detail', args=[999999]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_admin_cannot_submit_student_answer(self):
+        self.client.login(username='admin', password='AdminPassword123!')
+        response = self.client.post(
+            reverse('challenge_submit', args=[self.challenge.pk]),
+            {'answer': 'Hello, CodeQuest!'}, follow=True,
+        )
+        self.assertRedirects(response, reverse('challenge_detail', args=[self.challenge.pk]))
+        self.assertFalse(Submission.objects.exists())
+
+    def test_get_delete_only_displays_confirmation(self):
+        self.client.login(username='admin', password='AdminPassword123!')
+        response = self.client.get(reverse('challenge_delete', args=[self.challenge.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Challenge.objects.filter(pk=self.challenge.pk).exists())
+
+    def test_invalid_challenge_form_does_not_save(self):
+        self.client.login(username='admin', password='AdminPassword123!')
+        response = self.client.post(reverse('challenge_create'), {
+            'title': '   ', 'description': '   ', 'category': 'unknown',
+            'difficulty': 'impossible', 'language': 'Python', 'expected_output': '   ',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Challenge.objects.count(), 1)
+
+    @override_settings(DEBUG=False)
+    def test_unknown_url_uses_custom_404_page(self):
+        response = self.client.get('/this-route-does-not-exist/')
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, 'Page not found', status_code=404)
+
+    def test_custom_500_handler_returns_generic_page(self):
+        from codequest_project.views import handler500
+
+        response = handler500(RequestFactory().get('/'))
+        self.assertEqual(response.status_code, 500)
+        self.assertContains(response, 'Something went wrong', status_code=500)
 
     def test_student_can_submit_and_submission_is_persisted(self):
         self.client.login(username='student', password='StudentPassword123!')
