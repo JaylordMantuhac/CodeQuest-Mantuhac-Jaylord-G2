@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Page Not Found - CodeQuest{% endblock %}
+{% block content %}
+<main class="container py-5 text-center">
+    <h1>Page not found</h1>
+    <p class="text-muted">The page you requested is unavailable.</p>
+    <a class="btn btn-cq-primary" href="{% url 'accounts:index' %}">Return to CodeQuest</a>
+</main>
+{% endblock %}

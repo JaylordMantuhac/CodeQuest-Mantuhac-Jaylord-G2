@@ -9,5 +9,8 @@ urlpatterns = [
     path('challenges/', include('challenges.urls')),
 ]
 
+handler404 = 'codequest_project.views.handler404'
+handler500 = 'codequest_project.views.handler500'
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

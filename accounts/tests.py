@@ -40,7 +40,7 @@ class AccountRegistrationTests(TestCase):
         self.assertTrue(hasattr(user, 'profile'))
         self.assertIsNotNone(user.profile)
 
-    def test_successful_admin_registration(self):
+    def test_public_registration_cannot_grant_admin_role(self):
         data = {
             'first_name': 'Admin',
             'last_name': 'Master',
@@ -52,9 +52,8 @@ class AccountRegistrationTests(TestCase):
         }
         response = self.client.post(self.register_url, data, follow=True)
         self.assertEqual(response.status_code, 200)
-        user = User.objects.get(username='quest_admin')
-        self.assertEqual(user.role, User.ROLE_ADMIN)
-        self.assertTrue(user.is_staff)
+        self.assertFalse(User.objects.filter(username='quest_admin').exists())
+        self.assertFormError(response.context['form'], 'role', 'Select a valid choice. admin is not one of the available choices.')
 
     def test_registration_password_mismatch(self):
         data = {
@@ -160,7 +159,7 @@ class AccountLoginLogoutTests(TestCase):
 
     def test_logout_ends_session(self):
         self.client.login(username='student1', password='StudentPassword123!')
-        response = self.client.get(self.logout_url, follow=True)
+        response = self.client.post(self.logout_url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, self.login_url)
         self.assertFalse(response.context['user'].is_authenticated)

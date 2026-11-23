@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import transaction
+from django.views.decorators.http import require_POST
 from .models import User, Profile
 from .forms import RegistrationForm, LoginForm, UserUpdateForm, ProfileUpdateForm
 from .decorators import role_required
@@ -85,6 +87,7 @@ def login_view(request):
 
 
 @login_required
+@require_POST
 def logout_view(request):
     username = request.user.username
     auth_logout(request)
@@ -166,8 +169,9 @@ def profile_edit_view(request):
         )
 
         if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
+            with transaction.atomic():
+                user_form.save()
+                profile_form.save()
             messages.success(request, "Your profile details have been updated successfully!")
             return redirect('accounts:profile')
         else:
