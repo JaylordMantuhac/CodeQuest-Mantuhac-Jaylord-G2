@@ -164,6 +164,12 @@ class AccountLoginLogoutTests(TestCase):
         self.assertRedirects(response, self.login_url)
         self.assertFalse(response.context['user'].is_authenticated)
 
+    def test_logout_rejects_get(self):
+        self.client.login(username='student1', password='StudentPassword123!')
+        response = self.client.get(self.logout_url)
+        self.assertEqual(response.status_code, 405)
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+
     def test_login_required_protection(self):
         protected_urls = [
             reverse('accounts:student_dashboard'),
