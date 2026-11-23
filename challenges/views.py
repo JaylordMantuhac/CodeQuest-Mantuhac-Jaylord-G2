@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.views.decorators.http import require_http_methods
 from .models import Challenge, Submission
 from .forms import ChallengeForm, SubmissionForm
 from accounts.decorators import role_required
@@ -8,7 +9,7 @@ from accounts.decorators import role_required
 
 @login_required
 def challenge_list(request):
-    challenges = Challenge.objects.all().order_by('-created_at')
+    challenges = Challenge.objects.select_related('created_by').order_by('-created_at')
     return render(request, 'challenges/challenge_list.html', {'challenges': challenges})
 
 
@@ -29,6 +30,7 @@ def challenge_detail(request, pk):
     })
 
 
+@require_http_methods(['GET', 'POST'])
 @login_required
 def challenge_submit(request, pk):
     if request.user.role != 'student':
@@ -63,6 +65,7 @@ def challenge_submit(request, pk):
     })
 
 
+@require_http_methods(['GET', 'POST'])
 @role_required(['admin'])
 def challenge_create(request):
     if request.method == 'POST':
@@ -79,6 +82,7 @@ def challenge_create(request):
     return render(request, 'challenges/challenge_form.html', {'form': form, 'action': 'Create'})
 
 
+@require_http_methods(['GET', 'POST'])
 @role_required(['admin'])
 def challenge_edit(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
@@ -95,6 +99,7 @@ def challenge_edit(request, pk):
     return render(request, 'challenges/challenge_form.html', {'form': form, 'action': 'Edit', 'challenge': challenge})
 
 
+@require_http_methods(['GET', 'POST'])
 @role_required(['admin'])
 def challenge_delete(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
